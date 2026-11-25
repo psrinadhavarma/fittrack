@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import "./App.css";
+import HealthTools from "./HealthTools.jsx";
 
 const ADMIN = {
   name: "Admin",
@@ -55,7 +56,7 @@ function App() {
     }
   }, [currentUser]);
 
-  function handleAuth(e) {
+   function handleAuth(e) {
     e.preventDefault();
 
     if (isSignup) {
@@ -70,7 +71,9 @@ function App() {
         id: Date.now(),
       };
 
-      setUsers((prev) => [...prev, newUser]);
+      const updatedUsers = [...users, newUser];
+localStorage.setItem("users", JSON.stringify(updatedUsers));
+setUsers(updatedUsers);
       alert("Account created! Please login.");
       setIsSignup(false);
       setForm({ name: "", email: "", password: "" });
@@ -235,6 +238,26 @@ function App() {
             >
               ◷ Workout History
             </button>
+            <button
+  className={`nav-item ${page === "bmi" ? "active" : ""}`}
+  onClick={() => setPage("bmi")}
+>
+  📏 BMI Calculator
+</button>
+
+<button
+  className={`nav-item ${page === "weight" ? "active" : ""}`}
+  onClick={() => setPage("weight")}
+>
+  📈 Weight Progress
+</button>
+
+<button
+  className={`nav-item ${page === "diet" ? "active" : ""}`}
+  onClick={() => setPage("diet")}
+>
+  🥗 Diet Planner
+</button>
           </>
         )}
 
@@ -388,7 +411,13 @@ function App() {
                 </form>
               </section>
             )}
-
+{["bmi", "weight", "diet"].includes(page) && (
+  <HealthTools
+    key={currentUser.email}
+    email={currentUser.email}
+    page={page}
+  />
+)}
             {page === "history" && (
               <section className="panel">
                 <h1>Workout History</h1>
